@@ -2,65 +2,68 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-4" />
-    <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Crypto App</title>
-    <script type="module" src="main.js" defer></script>
+    <title>CipherBox</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="main.js"></script>
 </head>
 
 <body>
-    <form id="crypto_frm">
 
-        <div class="form-group">
-            <label>Crypto Tool</label>
-        </div>
-        <div class="form-group">
-            <textarea required placeholder="Give your plain or chaper text..." id="text_input" rows="4"></textarea>
-        </div>
+    <main class="app-container">
+        <form id="crypto_frm">
 
-        <div class="form-group">
-            <input required placeholder="The secret key..." id="key" type="password">
-        </div>
-        <div class="form-group radio-group" id="select_algo">
-            <label>Which algorithm?</label>
-            <div>
-                <input type="radio" class="sul-radio" checked name="encrypt_algo" value="Aes" id="Aes">
-                <label for="Aes">AES</label>
+            <header class="form-header">
+                <h1>Cipher Box</h1>
+            </header>
 
-            </div>
-            <div>
-                <input type="radio" class="sul-radio" name="encrypt_algo" value="Chacha" id="Chacha">
-                <label for="Chacha">CHACHA</label>
+            <div class="form-group">
+                <label for="text_input">Input Text</label>
+                <textarea required id="text_input" rows="4"></textarea>
             </div>
 
-        </div>
-        <div class="form-group">
-            <textarea readonly placeholder="Press the encrypt or decrypt button to see result..." id="text_output"
-                rows="4"></textarea>
-        </div>
+            <div class="form-group">
+                <label for="key">Secret Key</label>
+                <input required id="key" type="password">
+            </div>
 
-        <div class="action-group">
-            <button id="encrypt_btn" type="button">
-                <img src="assets/lock.png" alt="">
-            </button>
+            <fieldset class="form-group radio-group" id="select_algo">
+                <legend>Which algorithm?</legend>
+                <div class="radio-option">
+                    <input type="radio" class="radio_btn" checked name="encrypt_algo" value="Aes" id="Aes">
+                    <label for="Aes">AES</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" class="radio_btn" name="encrypt_algo" value="Chacha" id="Chacha">
+                    <label for="Chacha">CHACHA</label>
+                </div>
+            </fieldset>
 
-            <button id="decrypt_btn" type="button">
+            <div class="form-group">
+                <label for="text_output">Result</label>
+                <textarea readonly id="text_output" rows="4"></textarea>
+            </div>
 
-                <img src="assets/key.png" alt="">
-            </button>
-            <button id="copy_btn" disabled type="button">
-                <img src="assets/copy2.png" alt="">
-            </button>
-        </div>
+            <div class="action-group">
+                <button id="encrypt_btn" type="button" title="Encrypt">
+                    <img src="assets/lock.png" alt="Lock">
+                </button>
+                <button id="decrypt_btn" type="button" title="Decrypt">
+                    <img src="assets/key.png" alt="Key">
+                </button>
+                <button id="copy_btn" disabled type="button" title="Copy to Clipboard">
+                    <img src="assets/copy2.png" alt="Copy">
+                </button>
+            </div>
 
-        <div class="form-group">
+            <div class="status-group" id="status_box">
+                <img id="img_hint" alt="" src="">
+                <p id="error_msg"></p>
+            </div>
 
-            <img id="img_hint" alt="">
-            <p id="error_msg"></p>
-        </div>
-
-    </form>
+        </form>
+    </main>
 
 </body>
 

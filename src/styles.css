@@ -1,291 +1,253 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-:root {
-    --main-color: #eef4f6;
-
-    --ruler: 13px;
-    --transition: all 0.15s ease-in-out;
-
-    --primary-color: #0097e6;
-    --color-bg: #ebecf0;
-    --color-white: #fff;
-    --color-shadow: rgba(186, 190, 204, 0.9);
-    --main-text-color: red;
-    --text-field-radius: calc(var(--ruler) * 1);
-    --check-radio-color: var(--primary-color);
-
-
-    --down-side: inset 4px 6px 8px #bdbcbc, inset -5px -5px 11px #ffffff;
-    --up-side: 5px 5px 10px #b5b5b5, -5px -5px 16px #ffffff;
-
-    --back-color-up-side: linear-gradient(-20deg, #e8e8e8, #ffffff);
-}
-
-
-/*
-.light-mode {
-    --primary-color: #0097e6;
-    --color-bg: #ebecf0;
-    --color-white: #fff;
-    --color-shadow: rgba(186, 190, 204, 0.9);
-    --main-text-color: #333;
-    --text-field-radius: calc(var(--ruler) * 1);
-    --check-radio-color: var(--primary-color);
-}
-
-.dark-mode {
-    --primary-color: #0086cc;
-    --color-bg: #333333;
-    --color-white: #3b3b3b;
-    --color-shadow: #2b2b2b;
-    --main-text-color: #aaa;
-    --text-field-radius: calc(var(--ruler) * 1);
-    --check-radio-color: var(--primary-color);
-}
-*/
 @font-face {
     font-family: "Inconsolatazi";
-    src: local("Inconsolatazi"),
-        url("fonts/Inconsolatazi.otf") format("opentype");
+    src: local("Inconsolatazi"), url("fonts/Inconsolatazi.otf") format("opentype");
 }
 
 @font-face {
     font-family: "InconsolataziBold";
-    src: local("InconsolataziBold"),
-        url("fonts/InconsolataziBold.otf") format("opentype");
+    src: local("InconsolataziBold"), url("fonts/InconsolataziBold.otf") format("opentype");
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+}
+
+:root {
+    --main-color: #eef4f6;
+    --primary-color: #0097e6;
+    --text-muted: #8c8c8c;
+    --text-dark: #626262;
+
+
+    --up-side: 5px 5px 10px #b5b5b5, -5px -5px 16px #ffffff;
+    --down-side: inset 4px 6px 6px #bdbcbc, inset -5px -5px 8px #ffffff;
+    --back-color-up-side: linear-gradient(-20deg, #e8e8e8, #ffffff);
+
+    --inner-down-side: linear-gradient(-20deg, #efefef, #ffffff);
+    --inner-back-color-down-side: linear-gradient(#f3f3f3, #f3f3f3);
+    --press-side: 0px 1px 8px #757575, -5px -5px 5px #ffffff;
 }
 
 body {
-    justify-content: center;
     background-color: var(--main-color);
-    position: relative;
+    font-family: 'Inconsolatazi', monospace;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+}
+
+form {
+    width: 100%;
+    background-color: var(--main-color);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: var(--back-color-up-side);
+    box-shadow: var(--down-side);
+    padding: 30px;
+    border-radius: 30px;
+    overflow: hidden;
+
 }
 
 body,
-form {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+button,
+label,
+img,
+h1,
+fieldset {
+    -webkit-user-select: none;
+    user-select: none;
 }
 
-form {
-    display: flex;
-    top: 80px;
-    flex-direction: column;
-    justify-content: flex-start;
-
-    position: absolute;
-    background-color: inherit;
-    width: 500px;
-    height: 600px;
-}
-
-.form-group:first-child label {
+.form-header h1 {
+    font-family: "InconsolataziBold";
     font-size: 30px;
+    color: var(--text-muted);
+    text-align: center;
     margin-bottom: 10px;
 }
 
-.form-group,
-.action-group {
-    width: 100%;
+.form-group {
     display: flex;
-    justify-content: space-around;
-    margin-bottom: 30px;
-}
-
-
-.action-group {
-    width: 80%;
-    height: 10%;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-}
-
-.action-group button {
-    width: 60px;
-    height: 60px;
-    border: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    background-color: inherit;
-
-    cursor: pointer;
-    outline: none;
-    background: var(--back-color-up-side);
-    box-shadow: var(--up-side);
-}
-
-
-button:disabled {
-    opacity: 0.8;
-    background: none;
-    box-shadow: none;
-    cursor: auto;
-}
-
-button:disabled img {
-    opacity: 0.8;
-}
-
-.action-group button img {
-    opacity: 0.78;
-    width: 70%;
-    height: 70%;
-}
-
-#select_algo {
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
+    gap: 8px;
+    width: 100%;
 }
 
-#select_algo label {
-    font-size: 18px;
-    font-family: 'Inconsolatazi';
-
+.form-group>label,
+.radio-group legend {
+    font-weight: bold;
+    color: var(--text-muted);
+    font-size: 16px;
+    padding-left: 15px;
 }
 
-#select_algo div label {
-
-    margin-left: 10px;
-    font-size: 22px;
-}
-
-#select_algo>label {
-    margin-bottom: 15px;
-    font-size: 25px;
-}
-
-#select_algo div {
-    width: 80%;
-    height: 30px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-}
-
-#select_algo div:first-of-type {
-    margin: 5px 0 15px 0;
-}
-
-#select_algo div:last-of-type {
-    margin-top: 15px;
-}
-
-#select_algo div input {
-    width: 5px;
-    height: 5px;
-    margin: 10px;
-}
-
-#select_algo label:first-child {
-    align-self: center;
+.radio-group legend {
+    margin-bottom: 10px;
 }
 
 
 form textarea,
-form input {
-    width: 90%;
+form input[type="password"] {
+    width: 100%;
+    color: var(--text-dark);
+    background: var(--back-color-up-side);
+    box-shadow: var(--up-side);
+    border: none;
+    border-radius: 15px;
+    outline: none;
+    padding: 15px 20px;
+    font-family: inherit;
+    font-size: 16px;
     resize: none;
+    -webkit-user-select: text;
+    user-select: text;
+    transition: all 0.2s;
+}
+
+form input[type="password"] {
+    border-radius: 10px;
+}
+
+form textarea[id="text_input"]:focus-visible,
+form input[type="password"]:focus-visible {
+    background: var(--inner-back-color-down-side);
+    box-shadow: var(--press-side);
+    transform: scale(0.98);
+}
+
+.radio-group {
     border: none;
-    background-color: inherit;
-    border-radius: 50px;
-
-    background: var(--back-color-up-side);
-    box-shadow: var(--up-side);
-    color: rgb(139, 139, 139);
-    padding: 20px;
-    font-family: 'Inconsolatazi';
-
-    outline: none;
 }
 
-form input {
-    height: 100%;
-    font-size: 20px;
-}
-
-form input[type="password"]:focus {
-    box-shadow: var(--down-side);
-
-}
-
-
-form textarea[id="text_input"]:focus {
-    box-shadow: var(--down-side);
-
-}
-
-form textarea {
-    font-size: 20px;
-    padding: 25px;
-}
-
-form div div label {
-    cursor: pointer;
-}
-
-form label {
-
-    font-family: 'InconsolataziBold';
-    font-weight: bold;
-    color: rgb(140, 140, 140);
-}
-
-.sul-radio {
-    cursor: pointer;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    -webkit-appearance: none;
-    appearance: none;
-
-    border: none;
-    outline: none;
-    color: var(--main-text-color);
-
-    background: var(--back-color-up-side);
-    box-shadow: var(--up-side);
-}
-
-.sul-radio:checked {
-    background: none;
-    box-shadow: var(--down-side);
-
-}
-
-.form-group:last-child {
-    width: 80%;
-    height: 50px;
-    border-radius: 50px;
-    background: var(--main-color);
-    box-shadow: var(--up-side);
+.radio-option {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    margin-bottom: 0;
-    padding: 10px;
-    opacity: 0;
-    transition-property: all;
-    transition-duration: 0.5s;
+    gap: 12px;
+    padding: 5px 15px;
+}
+
+.radio_btn {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+
+    cursor: pointer;
+    outline: none;
+    box-shadow: none;
+    background: none;
+}
+
+.radio_btn:checked {
+
+    transform: scale(0.95);
+    background: var(--back-color-up-side);
+    box-shadow: var(--up-side);
+}
+
+.radio-option label {
+    cursor: pointer;
+    font-family: 'InconsolataziBold', monospace;
+    color: var(--text-muted);
+    font-size: 15px;
 }
 
 
-form div p {
-    display: inline-block;
-    margin-left: 10px;
+.action-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 25px;
+    margin-top: 10px;
 }
 
-form div img {
+.action-group button {
+    flex: 1;
+    height: 55px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--back-color-up-side);
+    box-shadow: var(--up-side);
+    outline: none;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: all 0.2s, outline 0s;
+}
+
+.action-group button:focus-visible {
+    outline: 3px solid #626262;
+}
+
+.action-group button:active:not(:disabled) {
+    transform: scale(0.95);
+    box-shadow: var(--press-side);
+    background: var(--inner-back-color-down-side);
+}
+
+.action-group button:disabled {
+    opacity: 0.4;
+    cursor: auto;
+    box-shadow: none;
+    background: transparent;
+}
+
+.action-group button img {
+    width: 33px;
+    height: 33px;
+    opacity: 0.7;
+
+}
+
+.status-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 50px;
+    padding: 10px 5px;
+    border-radius: 15px;
+    opacity: 1;
+    transform: translateX(-380px);
+    transition: transform 1s cubic-bezier(0.86, 0, 0.14, 1);
+}
+
+.status-group.show {
+    opacity: 1;
+    transform: translateX(0px);
+    background: none;
+
+}
+
+.status-group img {
     width: 30px;
     height: 30px;
+}
 
+.status-group p {
+    font-size: 16px;
+    font-family: 'InconsolataziBold', monospace;
+    width: 80%;
+}
+
+.status-group p code {
+    font-size: 14px;
+    color: var(--text-dark);
+    font-family: 'Inconsolatazi', monospace;
 }

@@ -1,112 +1,133 @@
+
 const { invoke } = window.__TAURI__.core;
+
 
 const encBtn = document.querySelector("#encrypt_btn");
 const decBtn = document.querySelector("#decrypt_btn");
 const copyBtn = document.querySelector("#copy_btn");
 const textIn = document.querySelector("#text_input");
 const textOut = document.querySelector("#text_output");
-const key = document.querySelector("#key");
-const errMassage = document.querySelector("#error_msg");
-const errBox = document.querySelector(".form-group:last-child");
+const keyInput = document.querySelector("#key");
+const errorMsg = document.querySelector("#error_msg");
+const statusBox = document.querySelector("#status_box");
 const hintIcon = document.querySelector("#img_hint");
 
-function showMassage(srcImage, textColor, text, time = 2500) {
-    hintIcon.setAttribute("src", srcImage);
-    errMassage.style.color = textColor;
-    errMassage.innerText = text;
-    errBox.style.opacity = 1;
-    errBox.style.translate = "0 -15px 0 ";
-    setTimeout(() => {
-        errBox.style.translate = "";
-        errBox.style.opacity = 0;
+let messageTimeout = null;
+
+function showMessage({ text, type = "error", time = 3500, role = "status" }) {
+    if (messageTimeout) clearTimeout(messageTimeout);
+
+
+    errorMsg.innerHTML = text;
+    statusBox.setAttribute("role", role);
+
+    if (type === "success") {
+        errorMsg.style.color = "#0d8b49";
+        hintIcon.setAttribute("src", "assets/done.svg");
+    } else if (type === "error") {
+        errorMsg.style.color = "#eb3341";
+        hintIcon.setAttribute("src", "assets/error.svg");
+    } else {
+        errorMsg.style.color = "#3b3b3b";
+        hintIcon.setAttribute("src", "assets/clipboard.png");
+    }
+    statusBox.classList.add("show");
+
+    messageTimeout = setTimeout(() => {
+        statusBox.classList.remove("show");
     }, time);
 }
 
+function getSelectedAlgorithm() {
+    const checkedRadio = document.querySelector("input[name='encrypt_algo']:checked");
+    return checkedRadio ? checkedRadio.value.toLowerCase() : "aes";
+}
+
+function validateInputs(text, key) {
+    if (!text) {
+        showMessage({ text: "Input text cannot be empty" });
+        return false;
+    }
+    if (!key) {
+        showMessage({ text: "Cipher key is required" });
+        return false;
+    }
+    return true;
+}
+
 copyBtn.addEventListener('click', async () => {
-
-
     const textToCopy = textOut.value;
+    if (!textToCopy) return;
+
     try {
         await navigator.clipboard.writeText(textToCopy);
-        showMassage("assets/paste.png", "black", "Copied!");
+        showMessage({
+            text: "Copied to clipboard successfully!",
+            type: "normal"
+        });
     } catch (e) {
-        showMassage("assets/mark.png", "derkred", `Copy operation failed.\nerror: ${e}`, 5000);
+        showMessage({
+            text: `Copy operation failed<br><code>${e}</code>`,
+            role: "alert",
+            time: 6500
+        });
     }
-
-})
+});
 
 decBtn.addEventListener('click', async () => {
-
-
     const textValue = textIn.value.trim();
-    const keyValue = key.value.trim();
+    const keyValue = keyInput.value;
 
-    if (!textValue || !keyValue) {
-        showMassage("assets/mark.png", "derkred", `The fields are empty!`);
-    } else {
-        try {
-            const result = await invoke("decrypt_func", {
-                text: textValue, key: keyValue,
-                algorithm: document.querySelector("input[name='encrypt_algo']:checked").value.toLowerCase()
-            });
+    if (!validateInputs(textValue, keyValue)) return;
 
-            textOut.value = result;
-            showMassage("assets/check.png", "green", "Successful decryption");
-            copyBtn.disabled = false;
+    try {
+        const result = await invoke("decrypt_func", {
+            text: textValue,
+            key: keyValue,
+            algorithm: getSelectedAlgorithm()
+        });
 
-        } catch (e) {
-            showMassage("assets/mark.png", "derkred", `Decryption failed.\nerror: ${e}`, 5000);
-        }
+        textOut.value = result;
+        copyBtn.disabled = false;
 
+        showMessage({
+            text: "Successful decryption!",
+            type: "success"
+        });
+    } catch (e) {
+        showMessage({
+            text: `Decryption failed<br><code>${e}</code>`,
+            role: "alert",
+            time: 6500
+        });
     }
-
 });
+
 encBtn.addEventListener("click", async () => {
-
-
     const textValue = textIn.value.trim();
-    const keyValue = key.value.trim();
+    const keyValue = keyInput.value;
 
-    if (!textValue || !keyValue) {
-        showMassage("assets/mark.png", "derkred", `The fields are empty!`);
-    } else {
-        try {
-            const result = await invoke("encrypt_func", {
-                text: textValue, key: keyValue,
-                algorithm: document.querySelector("input[name='encrypt_algo']:checked").value.toLowerCase()
-            });
+    if (!validateInputs(textValue, keyValue)) return;
 
-            textOut.value = result;
-            showMassage("assets/check.png", "green", "Successful encryption");
-            copyBtn.disabled = false;
+    try {
+        const result = await invoke("encrypt_func", {
+            text: textValue,
+            key: keyValue,
+            algorithm: getSelectedAlgorithm()
+        });
 
-            copyBtn.style.cursor = "pointer";
-        } catch (e) {
-            showMassage("assets/mark.png", "derkred", `Encryption failed.\nerror: ${e}`, 5000);
-        }
+        textOut.value = result;
+        copyBtn.disabled = false;
+
+        showMessage({
+            text: "Successful encryption!",
+            type: "success"
+        });
+    } catch (e) {
+        showMessage({
+            text: `Encryption failed<br><code>${e}</code>`,
+            role: "alert",
+            time: 6500
+        });
     }
-})
-encBtn.addEventListener("mousedown", async () => {
-    encBtn.style.boxShadow = "var(--down-side)";
-    encBtn.style.scale = "0.95";
-});
-encBtn.addEventListener("mouseup", async () => {
-    encBtn.style.boxShadow = "var(--up-side)";
-    encBtn.style.scale = "1";
-});
-decBtn.addEventListener("mousedown", async () => {
-    decBtn.style.boxShadow = "var(--down-side)";
-    decBtn.style.scale = "0.95";
-});
-decBtn.addEventListener("mouseup", async () => {
-    decBtn.style.boxShadow = "var(--up-side)";
-    decBtn.style.scale = "1";
-});
-copyBtn.addEventListener("mousedown", async () => {
-    copyBtn.style.boxShadow = "var(--down-side)";
-    copyBtn.style.scale = "0.95";
-});
-copyBtn.addEventListener("mouseup", async () => {
-    copyBtn.style.boxShadow = "var(--up-side)";
-    copyBtn.style.scale = "1";
 });
