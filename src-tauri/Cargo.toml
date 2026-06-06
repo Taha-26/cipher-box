@@ -1,5 +1,5 @@
 [package]
-name = "crypto-app"
+name = "cipher-box"
 version = "0.1.0"
 description = "A Tauri App"
 authors = ["you"]
@@ -18,8 +18,6 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = [] }
-tauri-plugin-opener = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 aes-gcm = "0.10"
@@ -27,3 +25,14 @@ chacha20poly1305 = "0.10"
 sha2 = "0.10"
 rand = "0.8"
 base64 = "0.22"
+wasm-bindgen = "0.2.122"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = "0.2"
+getrandom = { version = "0.2", features = ["js"] }
+
+
+# 💻 ۳. وابستگی‌های مخصوص دسکتاپ/موبایل (وقتی برای واسم بیلد می‌گیری کاملاً نادیده گرفته می‌شوند)
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+tauri = { version = "2.0.0", features = [] }
+tauri-plugin-opener = "2"

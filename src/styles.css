@@ -21,12 +21,10 @@
     --text-muted: #8c8c8c;
     --text-dark: #626262;
 
-
     --up-side: 5px 5px 10px #b5b5b5, -5px -5px 16px #ffffff;
     --down-side: inset 4px 6px 6px #bdbcbc, inset -5px -5px 8px #ffffff;
     --back-color-up-side: linear-gradient(-20deg, #e8e8e8, #ffffff);
 
-    --inner-down-side: linear-gradient(-20deg, #efefef, #ffffff);
     --inner-back-color-down-side: linear-gradient(#f3f3f3, #f3f3f3);
     --press-side: 0px 1px 8px #757575, -5px -5px 5px #ffffff;
 }
@@ -53,11 +51,7 @@ form {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    background: var(--back-color-up-side);
-    box-shadow: var(--down-side);
-    padding: 30px;
-    border-radius: 30px;
-    overflow: hidden;
+    padding: 10px;
 
 }
 
@@ -65,8 +59,7 @@ body,
 button,
 label,
 img,
-h1,
-fieldset {
+h1 {
     -webkit-user-select: none;
     user-select: none;
 }
@@ -98,7 +91,6 @@ fieldset {
     margin-bottom: 10px;
 }
 
-
 form textarea,
 form input[type="password"] {
     width: 100%;
@@ -112,7 +104,6 @@ form input[type="password"] {
     font-family: inherit;
     font-size: 16px;
     resize: none;
-    -webkit-user-select: text;
     user-select: text;
     transition: all 0.2s;
 }
@@ -166,7 +157,6 @@ form input[type="password"]:focus-visible {
     font-size: 15px;
 }
 
-
 .action-group {
     display: flex;
     justify-content: space-between;
@@ -215,6 +205,10 @@ form input[type="password"]:focus-visible {
 
 }
 
+.form-group:last-child {
+    overflow: hidden;
+}
+
 .status-group {
     display: flex;
     align-items: center;
@@ -224,6 +218,7 @@ form input[type="password"]:focus-visible {
     padding: 10px 5px;
     border-radius: 15px;
     opacity: 1;
+
     transform: translateX(-380px);
     transition: transform 1s cubic-bezier(0.86, 0, 0.14, 1);
 }

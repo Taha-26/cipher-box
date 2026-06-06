@@ -1,19 +1,22 @@
 use aes_gcm::{aead::Aead, Aes256Gcm, KeyInit, Nonce as AesNonce};
 use base64::{engine::general_purpose, Engine as _};
 use chacha20poly1305::{ChaCha20Poly1305, Nonce as ChaNonce};
-use rand::Rng; 
+use rand::Rng;
 use sha2::{Digest, Sha256};
+#[cfg(not(target_arch = "wasm32"))]
 use tauri::generate_handler;
+#[cfg(target_arch = "wasm32")]
+use wasm_bindgen::prelude::*;
 
-#[derive(serde::Deserialize, Debug)]
-#[serde(rename_all = "lowercase")]
-enum Algorithms {
+#[derive(serde::Serialize, serde::Deserialize, Clone, Copy)]
+#[serde(rename_all = "PascalCase")]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
+pub enum Algorithms {
     Aes,
     Chacha,
 }
 
-#[tauri::command]
-fn encrypt_func(text: String, key: String, algorithm: Algorithms) -> Result<String, String> {
+fn internal_encrypt(text: String, key: String, algorithm: Algorithms) -> Result<String, String> {
     let key_hash = Sha256::digest(key.as_bytes());
 
     let nonce_bytes: [u8; 12] = rand::thread_rng().gen();
@@ -42,8 +45,7 @@ fn encrypt_func(text: String, key: String, algorithm: Algorithms) -> Result<Stri
     Ok(general_purpose::STANDARD.encode(combined))
 }
 
-#[tauri::command]
-fn decrypt_func(text: String, key: String, algorithm: Algorithms) -> Result<String, String> {
+fn internal_decrypt(text: String, key: String, algorithm: Algorithms) -> Result<String, String> {
     let combined = general_purpose::STANDARD
         .decode(text.trim())
         .map_err(|_| "The encrypted text format is invalid!".to_string())?;
@@ -75,6 +77,33 @@ fn decrypt_func(text: String, key: String, algorithm: Algorithms) -> Result<Stri
     String::from_utf8(decrypted_bytes).map_err(|_| "Decrypted data is not valid UTF-8.".to_string())
 }
 
+
+#[cfg(not(target_arch = "wasm32"))]
+#[tauri::command]
+fn encrypt_func(text: String, key: String, algorithm: Algorithms) -> Result<String, String> {
+    internal_encrypt(text, key, algorithm)
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+#[tauri::command]
+fn decrypt_func(text: String, key: String, algorithm: Algorithms) -> Result<String, String> {
+    internal_decrypt(text, key, algorithm)
+}
+
+
+#[cfg(target_arch = "wasm32")]
+#[wasm_bindgen]
+pub fn encrypt_func(text: String, key: String, algorithm: Algorithms) -> Result<String, String> {
+    internal_encrypt(text, key, algorithm)
+}
+
+#[cfg(target_arch = "wasm32")]
+#[wasm_bindgen]
+pub fn decrypt_func(text: String, key: String, algorithm: Algorithms) -> Result<String, String> {
+    internal_decrypt(text, key, algorithm)
+}
+
+#[cfg(not(target_arch = "wasm32"))]
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
