@@ -1,0 +1,19 @@
+{
+  "name": "cipher-box",
+  "type": "module",
+  "collaborators": [
+    "you"
+  ],
+  "description": "A Tauri App",
+  "version": "0.1.0",
+  "files": [
+    "crypto_app_lib_bg.wasm",
+    "crypto_app_lib.js",
+    "crypto_app_lib.d.ts"
+  ],
+  "main": "crypto_app_lib.js",
+  "types": "crypto_app_lib.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
